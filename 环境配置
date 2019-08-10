@@ -1,0 +1,25 @@
+需要安装opencv2.4或更高版本
+本程序使用codeblocks编辑器。需要在codeblocks编辑器中配置opencv环境
+1.查看相关文件的路径
+终端中输入pkg-config --cflags opencv  //查看opencv头文件位置
+      输入pkg-config --libs opencv    //查看opencv库文件位置
+2.在codeblocks项目中
+查找菜单栏中的settings=>complier
+在弹出窗口中查找search directories. Add头文件的位置.
+如：/usr/local/include/opencv 
+    /usr/local/include
+在Linker setting中左侧Link libraries添加opencv库文件
+3.确认之后进行测试，是否能够正常使用opencv
+#include <iostream>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+using namespace std;
+using namespace cv;
+int main(){
+    Mat img=imread("picture.jpg");
+    imshow("Test",img);
+    waitKey(0);
+    return 0;
+}
+
+

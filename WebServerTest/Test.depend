@@ -1,0 +1,105 @@
+# depslib dependency file v1.0
+1565400651 source:/home/lchen/桌面/Test/Test/Epoll.cpp
+	"Epoll.h"
+
+1565352273 /home/lchen/桌面/Test/Test/Epoll.h
+	<string>
+	<iostream>
+	<sys/epoll.h>
+	<errno.h>
+	<sys/socket.h>
+	<unistd.h>
+	<sys/types.h>
+	<fcntl.h>
+	<string.h>
+	<arpa/inet.h>
+	<netdb.h>
+	<stdlib.h>
+	<stdarg.h>
+	<map>
+	<memory>
+	<string>
+	<vector>
+	<mutex>
+	"Timer.h"
+	"RequestHttp.h"
+	"ThreadPool.h"
+
+1565316760 /home/lchen/桌面/Test/Test/RequestData.h
+	<string>
+	<unordered_map>
+	<memory>
+	<mutex>
+	"Epoll.h"
+	"Timer.h"
+
+1565400151 source:/home/lchen/桌面/Test/Test/main.cpp
+	<iostream>
+	"RequestHttp.h"
+	"Epoll.h"
+	"Util.h"
+
+1565332651 /home/lchen/桌面/Test/Test/ThreadPool.h
+	<functional>
+	<memory>
+	<vector>
+	<thread>
+	<mutex>
+	<condition_variable>
+	<atomic>
+	<queue>
+	<future>
+	<sstream>
+	<iostream>
+
+1565400731 /home/lchen/桌面/Test/Test/RequestHttp.h
+	<string>
+	<unordered_map>
+	<memory>
+	<mutex>
+	<sys/mman.h>
+	"Epoll.h"
+	"Timer.h"
+	"Util.h"
+	<fstream>
+
+1565357899 /home/lchen/桌面/Test/Test/Util.h
+	<cstdlib>
+	<string>
+	<signal.h>
+	<errno.h>
+	<unistd.h>
+	<fcntl.h>
+	<string.h>
+	"RequestHttp.h"
+	<iostream>
+	"Timer.h"
+
+1565401295 source:/home/lchen/桌面/Test/Test/RequestHttp.cpp
+	"RequestHttp.h"
+	<unordered_map>
+	<fcntl.h>
+	<sys/stat.h>
+	<queue>
+	<cstdlib>
+	<iostream>
+	<opencv2/opencv.hpp>
+	<opencv2/imgcodecs/imgcodecs.hpp>
+	<opencv2/highgui/highgui.hpp>
+
+1565360916 source:/home/lchen/桌面/Test/Test/Util.cpp
+	"Util.h"
+
+1565323722 /home/lchen/桌面/Test/Test/Timer.h
+	<memory>
+	<queue>
+	"RequestHttp.h"
+	<vector>
+	<chrono>
+
+1565359982 source:/home/lchen/桌面/Test/Test/Timer.cpp
+	"Timer.h"
+
+1565332670 source:/home/lchen/桌面/Test/Test/ThreadPool.cpp
+	"ThreadPool.h"
+
