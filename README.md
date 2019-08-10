@@ -1,23 +1,17 @@
 # A-Simple-Web-Server
-Introduction
 
 使用C++11编写的简单Web服务器，能够解析Get、Head请求。
 
+  Ubuntu 16.04 LTS
 
+  G++ 4.8.5
 
-Ubuntu 16.04 LTS
-
-G++ 4.8.5
-
-OpenCV 3.4.6
-
-
+  OpenCV 3.4.6
 
 服务器默认配置IP地址及端口号：127.0.0.1 8080. 可在main.cpp中进行调增。
 
 
-
-技术要点：
+##技术要点：
 
 1.使用Epoll边沿触发的IO多路复用技术，非阻塞IO
 
