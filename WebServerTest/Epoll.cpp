@@ -8,7 +8,7 @@ int Epoll::epollfd = 0;
 
 
 typedef std::shared_ptr<TimeNode> Node;
-struct TimerCmpare{   //priority_queueµÄ±È½Ïº¯Êı
+struct TimerCmpare{   //priority_queueçš„æ¯”è¾ƒå‡½æ•°
     bool operator()(Node& p, Node& q) const{
         return p->GetExpireTime() > q->GetExpireTime();
     }
@@ -26,11 +26,11 @@ std::shared_ptr<TimeNode> PushTimeNodeToQueue(std::shared_ptr<RequestHttp> reque
 void Handle_Expired_Event(){
     while(!TimerNodeQueue.empty()){
         std::shared_ptr<TimeNode> temp = TimerNodeQueue.top();
-        if(temp->isDeleted()){  //¼ì²éÊÇ·ñÒÑ¾­±»±ê¼ÇÎªÉ¾³ı
-            //±ê¼ÇÎªÄÜ¹»±»É¾³ı
+        if(temp->isDeleted()){  //æ£€æŸ¥æ˜¯å¦å·²ç»è¢«æ ‡è®°ä¸ºåˆ é™¤
+            //æ ‡è®°ä¸ºèƒ½å¤Ÿè¢«åˆ é™¤
             TimerNodeQueue.pop();
         }
-        else if(temp->isValid() == false){  //¼ì²éÊÇ·ñ¹ıÆÚ
+        else if(temp->isValid() == false){  //æ£€æŸ¥æ˜¯å¦è¿‡æœŸ
             TimerNodeQueue.pop();
         }
         else
@@ -39,7 +39,7 @@ void Handle_Expired_Event(){
 }
 
 void Epoll::initEpoll(int maxEvents) {
-    epollfd = epoll_create(maxEvents);  //Èô²»ÉèµÄ»°ÓĞÄ¬ÈÏÖµ65535
+    epollfd = epoll_create(maxEvents);  //è‹¥ä¸è®¾çš„è¯æœ‰é»˜è®¤å€¼65535
 	if (epollfd < 0) {
 		perror("epoll create error:");
 		exit(-1);
@@ -61,9 +61,9 @@ int Epoll::initServer(std::string hostName, int port, int socketType) {
 }
 
 int Epoll::socketBind(std::string hostName, int port, int socketType) {
-    //´´½¨socket
-    //°ó¶¨bing
-    //¿ªÆô¼àÌılisten
+    //åˆ›å»ºsocket
+    //ç»‘å®šbing
+    //å¼€å¯ç›‘å¬listen
 	int listenfd;
 	struct sockaddr_in servaddr;
 	listenfd = socket(AF_INET, socketType, 0);
@@ -76,13 +76,13 @@ int Epoll::socketBind(std::string hostName, int port, int socketType) {
 	std::string ip = getIpByHost(hostName, port);
 	inet_pton(AF_INET, ip.c_str(), &servaddr.sin_addr);
 	//servaddr.sin_addr.s_addr = inet_addr(hostName.c_str());
-	servaddr.sin_port = htons(port);  //·µ»ØÍøÂç×Ö½ÚĞòµÄÖµ
+	servaddr.sin_port = htons(port);  //è¿”å›ç½‘ç»œå­—èŠ‚åºçš„å€¼
 	if (bind(listenfd, (struct sockaddr*) &servaddr, sizeof(servaddr)) == -1) {
         perror("bind error:");
 		exit(-1);
 	}
 	//cout << servaddr.sin_addr.s_addr << " " << servaddr.sin_port << " " << port << endl;
-	listen(listenfd, 4096);   //µÚ¶ş¸ö²ÎÊıÊÇ¼àÌı¶ÓÁĞµÄ³¤¶È
+	listen(listenfd, 4096);   //ç¬¬äºŒä¸ªå‚æ•°æ˜¯ç›‘å¬é˜Ÿåˆ—çš„é•¿åº¦
 	return listenfd;
 }
 
@@ -95,7 +95,7 @@ void Epoll::setNonBlocking(int fd) {
 	}
 
 	flags |= O_NONBLOCK;
-	s = fcntl(fd, F_SETFL, flags);  //ÉèÖÃÎÄ¼ş´ò¿ª·½Ê½ÎªflagÖ¸¶¨·½Ê½
+	s = fcntl(fd, F_SETFL, flags);  //è®¾ç½®æ–‡ä»¶æ‰“å¼€æ–¹å¼ä¸ºflagæŒ‡å®šæ–¹å¼
 	if (s < 0) {
         perror("fcntl F_SETFL error:");
 		exit(-1);
@@ -157,7 +157,7 @@ void Epoll::doEpoll(std::shared_ptr<ThreadPool> thread_pool, int listen_fd, int 
 	}
 	delete[] events;
 }
-//²âÊÔ
+//æµ‹è¯•
 void Epoll::doEpoll(int n, int maxEvents, int timed_out, std::shared_ptr<ThreadPool> thread_pool){
 
 	while (true) {
@@ -199,9 +199,9 @@ bool Epoll::remove_Event(int fd, __uint32_t state) {
         perror("epoll del error");
         return false;
 	}
-	auto p = fd_to_request.find(fd);    //map³ÉÔ±º¯Êı
-	if(p != fd_to_request.end()){       //ÕÒµ½ÁË
-        fd_to_request.erase(p);         //ÒÆ³ıµü´úÆ÷Ö¸¶¨µÄÔªËØ
+	auto p = fd_to_request.find(fd);    //mapæˆå‘˜å‡½æ•°
+	if(p != fd_to_request.end()){       //æ‰¾åˆ°äº†
+        fd_to_request.erase(p);         //ç§»é™¤è¿­ä»£å™¨æŒ‡å®šçš„å…ƒç´ 
 	}
 	return true;
 }
@@ -223,12 +223,21 @@ void Epoll::AcceptConnection(int listen_fd, int epollfd){
     struct sockaddr_in client_addr;
     memset(&client_addr, 0, sizeof(struct sockaddr_in));
     /***********************************************
-    ´Ë´¦ÓĞÁ½µãµ÷ÊÔÁËºÃ¾Ã¡£ÌØ´Ë¼ÇÂ¼£¡£¡£¡
-    1.socklen_t client_addr_len = sizeof(client_addr);  ¸³Öµ´óĞ¡¡£Ô­À´¸³ÖµÎª0»ò1³öÏÖacceptµ½È«0µØÖ·£¬ÎŞ¶Ë¿ÚºÅµÄÇé¿ö¡£
-    2.while((accept_fd = accept(listen_fd, (struct sockaddr*)&client_addr, &client_addr_len)) > 0){} ´Ë´¦½«accept·ÅÈëµ½while
-    Ñ­»·Àï£¬½á¹ûÄÜ¹»Õı³£acceptµ½ËùÓĞµÄÁ¬½Ó¡£
-    Ö®Ç°ÊÇÖ±½ÓÊ¹ÓÃif((accept_fd = accept(listen_fd, (struct sockaddr*)&client_addr, &client_addr_len)) > 0){}Ôò³öÏÖÁËacceptµ½µÄ
-    Á¬½ÓÊıÄ¿ºÍÇëÇóÁ¬½ÓÊıÄ¿²»Æ¥ÅäÎÊÌâ¡£
+    æ­¤å¤„æœ‰ä¸¤ç‚¹è°ƒè¯•äº†å¥½ä¹…ã€‚ç‰¹æ­¤è®°å½•ï¼ï¼ï¼
+    1.socklen_t client_addr_len = sizeof(client_addr);  èµ‹å€¼å¤§å°ã€‚åŸæ¥èµ‹å€¼ä¸º0æˆ–1å‡ºç°acceptåˆ°å…¨0åœ°å€ï¼Œæ— ç«¯å£å·çš„æƒ…å†µã€‚
+    2.while((accept_fd = accept(listen_fd, (struct sockaddr*)&client_addr, &client_addr_len)) > 0){} æ­¤å¤„å°†acceptæ”¾å…¥åˆ°while
+    å¾ªç¯é‡Œï¼Œç»“æœèƒ½å¤Ÿæ­£å¸¸acceptåˆ°æ‰€æœ‰çš„è¿æ¥ã€‚
+    ä¹‹å‰æ˜¯ç›´æ¥ä½¿ç”¨if((accept_fd = accept(listen_fd, (struct sockaddr*)&client_addr, &client_addr_len)) > 0){}åˆ™å‡ºç°äº†acceptåˆ°çš„
+    è¿æ¥æ•°ç›®å’Œè¯·æ±‚è¿æ¥æ•°ç›®ä¸åŒ¹é…é—®é¢˜ã€‚
+    ***********************************************/
+    /***********************************************
+    å†…æ ¸acceptå‡½æ•°ä¸­æœ‰è¿™ä¹ˆä¸€æ®µ
+    if((so->so_state && SS_NBIO) && so->so_qlen == 0){   //å¦‚æœè¿æ¥é˜Ÿåˆ—ä¸ºç©ºï¼Œä¸”æ­¤Socketè®¾ç½®ä¸ºéé˜»å¡ï¼Œåˆ™ç«‹å³è¿”å›
+        splx(s);
+        return (EWOULDBLOCK);
+    }
+    å› åˆ›å»ºå®Œsocketåï¼Œå°†å…¶ç½®ä¸ºäº†éé˜»å¡çŠ¶æ€ï¼ˆå…·ä½“åœ¨initServerå‡½æ•°ä¸­ï¼‰ã€‚å› æ­¤è°ƒç”¨acceptæ—¶ï¼Œ
+    è‹¥è¿æ¥é˜Ÿåˆ—ä¸ºç©ºï¼Œåˆ™ä¼šç›´æ¥è¿”å›EWOULDBLOCK. 
     ***********************************************/
     socklen_t client_addr_len = sizeof(client_addr);
     int accept_fd = 0;
@@ -236,20 +245,20 @@ void Epoll::AcceptConnection(int listen_fd, int epollfd){
         char* str = inet_ntoa(client_addr.sin_addr);
         ntohs(client_addr.sin_port);
         //cout << accept_fd << " " << str << " " << ntohs(client_addr.sin_port) << endl;
-        if (accept_fd >= MaxEvents){  //ÏŞÖÆ×î´ó²¢·¢Á¬½ÓÊı
+        if (accept_fd >= MaxEvents){  //é™åˆ¶æœ€å¤§å¹¶å‘è¿æ¥æ•°
             close(accept_fd);
             return;
         }
-        setNonBlocking(accept_fd);   //½«¸ÄÃèÊö·ûÉèÎª·Ç×èÈûÄ£Ê½
+        setNonBlocking(accept_fd);   //å°†æ”¹æè¿°ç¬¦è®¾ä¸ºéé˜»å¡æ¨¡å¼
 
-        std::shared_ptr<RequestHttp> current_request(new RequestHttp(accept_fd, shared_from_this() ));  //´´½¨Óë¸ÃÎÄ¼şÃèÊö·û¶ÔÓ¦µÄRequestHttp¶ÔÏó
-        //ÉèÖÃÎÄ¼şÃèÊö·û¿É¶Á£¬±ßÔµ´¥·¢(Edge Triggered)Ä£Ê½£¬±£Ö¤Ò»¸ösocketÁ¬½ÓÔÚÈÎÒ»Ê±¿ÌÖ»±»Ò»¸öÏß³Ì´¦Àí
+        std::shared_ptr<RequestHttp> current_request(new RequestHttp(accept_fd, shared_from_this() ));  //åˆ›å»ºä¸è¯¥æ–‡ä»¶æè¿°ç¬¦å¯¹åº”çš„RequestHttpå¯¹è±¡
+        //è®¾ç½®æ–‡ä»¶æè¿°ç¬¦å¯è¯»ï¼Œè¾¹ç¼˜è§¦å‘(Edge Triggered)æ¨¡å¼ï¼Œä¿è¯ä¸€ä¸ªsocketè¿æ¥åœ¨ä»»ä¸€æ—¶åˆ»åªè¢«ä¸€ä¸ªçº¿ç¨‹å¤„ç†
         __uint32_t accept_event = EPOLLIN | EPOLLET | EPOLLONESHOT;
-        //EPOLLET¶ÁÈ¡Êı¾İºó£¬ÔÙ´Îµ÷ÓÃepoll_waitÒÑ¾­²»ÊÇ¾ÍĞ÷×´Ì¬ÁË¡£
+        //EPOLLETè¯»å–æ•°æ®åï¼Œå†æ¬¡è°ƒç”¨epoll_waitå·²ç»ä¸æ˜¯å°±ç»ªçŠ¶æ€äº†ã€‚
         add_Event(accept_fd, accept_event, current_request);
-        // ĞÂÔöÊ±¼äĞÅÏ¢
+        // æ–°å¢æ—¶é—´ä¿¡æ¯
         //PushTimeNodeToQueue(current_request, TIME_OUT);
-        current_request->AddTimer( PushTimeNodeToQueue(current_request, TIME_OUT) );  //½«Ö¸Ïò¸ÃÊ±¼ä¶ÔÏóµÄÖ¸Õë¼ÓÈëµ½¶ÔÓ¦µÄ´¦Àí¶ÔÏó¡£
+        current_request->AddTimer( PushTimeNodeToQueue(current_request, TIME_OUT) );  //å°†æŒ‡å‘è¯¥æ—¶é—´å¯¹è±¡çš„æŒ‡é’ˆåŠ å…¥åˆ°å¯¹åº”çš„å¤„ç†å¯¹è±¡ã€‚
 
     }
     //if(accept_fd < 0){
@@ -261,8 +270,8 @@ void Epoll::AcceptConnection(int listen_fd, int epollfd){
     //std::shared_ptr<TimeNode> timer(new TimeNode(current_request, TIME_OUT));
     //{
     //   mutex mu;
-    //  lock_guard<mutex> lck(mu);   //¼ÓËøÊÇÒòÎªÒª·ÀÖ¹
-    //   MyTimeQueue.AddTime(timer,); //Ê±¼ä¶ÓÁĞ¡£¸ù¾İ¹ıÆÚÊ±¼äÅÅĞò
+    //  lock_guard<mutex> lck(mu);   //åŠ é”æ˜¯å› ä¸ºè¦é˜²æ­¢
+    //   MyTimeQueue.AddTime(timer,); //æ—¶é—´é˜Ÿåˆ—ã€‚æ ¹æ®è¿‡æœŸæ—¶é—´æ’åº
     //}
 }
 
@@ -270,41 +279,41 @@ std::vector<std::shared_ptr<RequestHttp>> Epoll::getEventsRequest(int listen_fd,
     std::vector<std::shared_ptr<RequestHttp> > request_data;
     for(int i = 0; i < events_num; ++i){
         int fd = events[i].data.fd;
-        // ÓĞÊÂ¼ş·¢ÉúµÄÃèÊö·ûÎª¼àÌıÃèÊö·û
-        if(fd == listen_fd){   //ÓĞĞÂµÄÁ¬½Ó
+        // æœ‰äº‹ä»¶å‘ç”Ÿçš„æè¿°ç¬¦ä¸ºç›‘å¬æè¿°ç¬¦
+        if(fd == listen_fd){   //æœ‰æ–°çš„è¿æ¥
             AcceptConnection(listen_fd, epollfd);
         }
-        else if (fd < 3){  //012ºÅÎÄ¼şÃèÊö·û·Ö±ğÎª±ê×¼ÊäÈë¡¢±ê×¼Êä³öºÍ±ê×¼´íÎó
+        else if (fd < 3){  //012å·æ–‡ä»¶æè¿°ç¬¦åˆ†åˆ«ä¸ºæ ‡å‡†è¾“å…¥ã€æ ‡å‡†è¾“å‡ºå’Œæ ‡å‡†é”™è¯¯
             std::cout << "fd < 3" << std::endl;;
             break;
         }
         else{
             //std::cout << "Has Added" << std::endl;
-                //Ö®Ç°ÒÑ¾­Ìí¼ÓµÄÎÄ¼şÃèÊö·û
-            if ((events[i].events & EPOLLERR) || (events[i].events & EPOLLHUP)){ //¸øÒ»¸öÒÑ¾­¹Ø±ÕµÄsocketĞ´Ê±»á·¢ÉúEPOLLERR
+                //ä¹‹å‰å·²ç»æ·»åŠ çš„æ–‡ä»¶æè¿°ç¬¦
+            if ((events[i].events & EPOLLERR) || (events[i].events & EPOLLHUP)){ //ç»™ä¸€ä¸ªå·²ç»å…³é—­çš„socketå†™æ—¶ä¼šå‘ç”ŸEPOLLERR
                 std::cout << "error event\n" << std::endl;
                 auto p = fd_to_request.find(fd);
-                if(p != fd_to_request.end()){  //ÕÒµ½ÁË£¬²»Îª¿Õ
-                    fd_to_request[fd]->seperateTimer();  //½«RequestHttpÖĞÖ¸Ïò¶¨Ê±Æ÷µÄÖ¸ÕëÖÃÎª¿Õ
+                if(p != fd_to_request.end()){  //æ‰¾åˆ°äº†ï¼Œä¸ä¸ºç©º
+                    fd_to_request[fd]->seperateTimer();  //å°†RequestHttpä¸­æŒ‡å‘å®šæ—¶å™¨çš„æŒ‡é’ˆç½®ä¸ºç©º
                 }
                 fd_to_request.erase(p);
                 continue;
             }
-            // ½«ÇëÇóÈÎÎñ¼ÓÈëµ½Ïß³Ì³ØÖĞ
-            // ¼ÓÈëÏß³Ì³ØÖ®Ç°½«TimerºÍrequest·ÖÀë
+            // å°†è¯·æ±‚ä»»åŠ¡åŠ å…¥åˆ°çº¿ç¨‹æ± ä¸­
+            // åŠ å…¥çº¿ç¨‹æ± ä¹‹å‰å°†Timerå’Œrequeståˆ†ç¦»
             std::shared_ptr<RequestHttp> current_request = fd_to_request[fd];
-            //¸ù¾İÎÄ¼şÃèÊö·ûÕÒµ½ÏàÓ¦µÄRequestHttp¶ÔÏóÖ¸Õë
+            //æ ¹æ®æ–‡ä»¶æè¿°ç¬¦æ‰¾åˆ°ç›¸åº”çš„RequestHttpå¯¹è±¡æŒ‡é’ˆ
 
             if (current_request){
-                if ((events[i].events & EPOLLIN) || (events[i].events & EPOLLPRI)){            //ÒÑÁ¬½ÓÓÃ»§½ÓÊÜµ½Êı¾İ
+                if ((events[i].events & EPOLLIN) || (events[i].events & EPOLLPRI)){            //å·²è¿æ¥ç”¨æˆ·æ¥å—åˆ°æ•°æ®
                     //std::cout << "Event IN" << std::endl;
-                    current_request->setHandlerRead();      //½«¿É¶Á±êÖ¾Î»ÖÃÎ»
+                    current_request->setHandlerRead();      //å°†å¯è¯»æ ‡å¿—ä½ç½®ä½
                 }
-                if (events[i].events & EPOLLOUT){           //ÒÑÁ¬½ÓÓÃ»§ÓĞÊı¾İÒª·¢ËÍ
+                if (events[i].events & EPOLLOUT){           //å·²è¿æ¥ç”¨æˆ·æœ‰æ•°æ®è¦å‘é€
                     //std::cout << "Event OUT" << std::endl;
-                    current_request->setHandlerRead();      //½«¿ÉĞ´±êÖ¾Î»ÖÃÎ»
+                    current_request->setHandlerRead();      //å°†å¯å†™æ ‡å¿—ä½ç½®ä½
                 }
-                current_request->seperateTimer();     //½«¶ÔÓ¦µÄRequestHttp¶ÔÏó¼ÆÊ±Æ÷ÖÃÎª¿Õ
+                current_request->seperateTimer();     //å°†å¯¹åº”çš„RequestHttpå¯¹è±¡è®¡æ—¶å™¨ç½®ä¸ºç©º
                 request_data.push_back(current_request);
                 fd_to_request[fd].reset();
             }
